@@ -1,6 +1,6 @@
 # ecommerce
 
-##გაწვდით როგორც დაბილდულ ისე სორს პროჯექტს
+## გაწვდით როგორც დაბილდულ ისე სორს პროჯექტს
 
 დაბილდული პროექტის გასაშვებად საჭიროა გვეყენოს Java SE Development - https://www.oracle.com/java/technologies/javase-jdk11-downloads.html
 
