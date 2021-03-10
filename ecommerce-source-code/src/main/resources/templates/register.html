@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+    <meta charset="UTF-8">
+    <title>register</title>
+</head>
+<body>
+
+
+
+
+<!--<div class="d-flex justify-content-center align-items-center container">-->
+        <div class="container">
+
+<form action="/register" th:object="${userDTO}" method="POST" enctype="utf8" class="form-signin">
+    <div class="form-group">
+        <h2 class="form-signin-heading">გთხოვთ გაიაროთ რეგისტრაცია</h2>
+
+    <p th:text="${message}" style="color:red"></p>
+    <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+        <p th:each="err : ${#fields.errors('*')}" th:text="${err}" style="color:red"></p>
+    </div>
+
+    <div>
+    <label>სახელი</label>
+        <input class="form-control" th:field="*{firstName}"/>
+    </div>
+
+    <div>
+        <label >გვარი</label>
+        <input class="form-control" th:field="*{lastName}"/>
+    </div>
+    <div>
+        <label >მეილი</label>
+        <input type="email" class="form-control" th:field="*{email}"/>
+    </div>
+    <div>
+        <label >პაროლი</label>
+        <input class="form-control" type="password" th:field="*{password}"/>
+    </div>
+    <div>
+        <label >პირადი ნომერი</label>
+        <input class="form-control" th:field="*{personalId}"/>
+    </div>
+
+    <div style="margin-bottom:1rem">
+        <label >ანგარიშის ნომერი</label>
+        <input class="form-control" th:field="*{IBAN}"/>
+    </div>
+
+    <button type="submit" class="btn btn-lg btn-primary btn-block" style="display:block;width:100%">რეგისტრაცია</button>
+    </div>
+<a th:href="@{/login}">შესვლა</a>
+</form>
+</div>
+</body>
+
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="/files/jquery.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="margin:0px;padding:0px;">
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">დაბრუნება</a>
+            </li>
+            <li class="nav-item">
+                <a th:if="${check} == 1" class="nav-link" href="/logout">გამოსვლა</a>
+                <a th:if="${check} == 0" class="nav-link" href="/login">შესვლა</a>
+            </li>
+            <li class="nav-item">
+                <a th:if="${check} == 1" class="nav-link" href="/auth/my-product">ჩემი პროდუქტი</a>
+            </li>
+            <li class="nav-item">
+                <h5 th:if="${check} == 1" class="nav-link"  th:text="${balance} + '₾'"></h5>
+            </li>
+            <li class="nav-item">
+                <button th:if="${check} == 1"  class="btn btn-primary" id="addProduct" type="button">დამატება +</button>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container" style="margin-top:50px">
+
+    <div class="col-xs-12 col-md-6">
+
+        <!-- First product box start here-->
+
+        <div id="result">
+
+
+            <div th:each="product : ${products}">
+            <div class="prod-info-main prod-wrap clearfix">
+
+                <div class="row">
+
+                    <div class="col-md-5 col-sm-12 col-xs-12">
+
+                        <div class="product-image">
+
+                            <img th:src="'/files/' + ${product.image}" class="img-responsive" style="max-width:100%">
+
+                            <span class="tag2 hot">
+
+                                 SPECIAL
+
+                               </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-7 col-sm-12 col-xs-12">
+
+                        <div class="product-deatil">
+
+                            <h5 class="name">
+
+                                <a href="#" th:text="${product.name}">
+
+
+                                </a>
+
+
+                            </h5>
+
+                            <p class="price-container">
+
+                                <span th:text="${product.price} + '₾'"></span>
+
+                            </p>
+
+                            <span class="tag1"></span>
+
+                        </div>
+                        <div class="description">
+
+                        <p th:text="'რაოდენობა-' + ${product.quantity}"> </p>
+
+                    </div>
+
+
+
+
+                        </div>
+
+                </div>
+                <button class="btn btn-success" style="margin-right:10px;margin-top:10px;" id="update" th:value="${product.id}" >UPDATE</button>
+                <button class="btn btn-danger" id="delete" th:value="${product.id}" style="margin-top:10px;">DELETE</button>
+            </div>
+
+        </div>
+
+        <!-- end product -->
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <form action="/api/product/buy/" method="POST" id="formDelete">
+                    <h5>ნამდვილად გსურთ წაშლა?</h5>
+                    <button class="btn btn-danger" type="submit">დიახ</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">დახურვა</button>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel2">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/auth/product/create" method="POST" enctype="multipart/form-data" id="formUpdate">
+                    <div id="updateErrorDiv" style="display:none">error</div>
+                    <label>სახელი</label>
+                    <input name="name" id="name" class="form-control"> <br>
+                    <label >რაოდენობა</label>
+                    <input name="quantity" id="quantity" class="form-control"> <br>
+                    <label>ფასი</label>
+                    <input name="price" id="price" class="form-control"> <br>
+                    <label>სურათი</label>
+                    <input type="file" name="image" class="form-control">
+                    <button class="btn btn-primary" type="submit" style="margin-top: 30px;">რედაქტირება</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+<script>
+
+var serverContext = window.location.origin;
+
+
+
+
+
+$(document).on('click', '#addProduct', function() {
+    console.log("aqvar")
+    $('#myModal2').modal('show');
+});
+var deleteUrl = '';
+$(document).on('click', '#delete', function() {
+    deleteUrl = serverContext + '/auth/product/delete/' + $(this).attr('value');
+    console.log("aqvar",deleteUrl)
+    $('#modalDelete').modal('show');
+});
+
+var updateUrl = '';
+var updateId = 0;
+$(document).on('click', '#update', function() {
+    updateUrl = serverContext + '/auth/product/update/' + $(this).attr('value');
+    updateId = $(this).attr('value');
+    console.log("aqvar",updateUrl);
+
+    $.ajax({
+        url: serverContext + '/auth/product/get/' + updateId,
+        contentType: "application/json",
+        dataType: 'json',
+        success: function(result){
+        $('#name').val(result.name);
+        $('#quantity').val(result.quantity);
+        $('#price').val(result.price);
+            console.log(result);
+        }
+
+});
+    $('#modalUpdate').modal('show');
+});
+
+
+
+$('#formDelete').submit(function(e){
+console.log(deleteUrl,'+++')
+    e.preventDefault();
+    $.ajax({
+        url: deleteUrl,
+        type: 'post',
+        contentType: false,
+        cache: false,
+        processData:false,
+<!--        data:$('#myForm').serialize(),-->
+        data: new FormData(this),
+        success:function(){
+        window.location = "/auth/my-product"
+        }
+    });
+});
+
+
+$('#formUpdate').submit(function(e){
+    e.preventDefault();
+    $.ajax({
+        url: updateUrl,
+        type: 'post',
+        contentType: false,
+        cache: false,
+        processData:false,
+        data: new FormData(this),
+        success:function(){
+        window.location = "/auth/my-product"
+        },
+        error:function(data){
+        console.log("shemovedi",data)
+        var message = data.responseJSON.message;
+        var fieldMessage ='';
+        if (typeof message === "undefined") {
+            fieldMessage = data.responseJSON.body.message;
+        }
+        else{
+            fieldMessage = message.split(",")[0]
+        }
+        $("#updateErrorDiv").show().html('<p style="color:red">' + fieldMessage + '</p');
+
+        return;
+        }
+    })
+});
+
+
+
+$('#myForm').submit(function(e){
+    e.preventDefault();
+    $.ajax({
+        url: '/auth/product/create/',
+        type: 'post',
+        contentType: false,
+        cache: false,
+        processData:false,
+<!--        data:$('#myForm').serialize(),-->
+        data: new FormData(this),
+        success:function(){
+        window.location = "/"
+        }
+    });
+});
+        </script>
+<style>
+
+.prod-info-main {
+
+    border: 1px solid #CEEFFF;
+
+    margin-bottom: 20px;
+
+    margin-top: 10px;
+
+    background: #fff;
+
+    padding: 6px;
+
+    -webkit-box-shadow: 0 1px 4px 0 rgba(21,180,255,0.5);
+
+    box-shadow: 0 1px 1px 0 rgba(21,180,255,0.5);
+
+}
+
+
+
+.prod-info-main .product-image {
+
+    background-color: #EBF8FE;
+
+    display: block;
+
+    min-height: 238px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    border: 1px solid #CEEFFF;
+
+    padding-top: 40px;
+
+}
+
+
+
+.rotprod{
+
+    -webkit-transition-duration: 0.8s;
+
+    -moz-transition-duration: 0.8s;
+
+    -o-transition-duration: 0.8s;
+
+    transition-duration: 0.8s;
+
+    }
+
+
+
+.rotprod:hover
+
+{
+
+    -webkit-transform:rotate(360deg);
+
+    -moz-transform:rotate(360deg);
+
+    -o-transform:rotate(360deg);
+
+}
+
+
+
+.prod-info-main .product-deatil {
+
+    border-bottom: 1px solid #dfe5e9;
+
+    padding-bottom: 17px;
+
+    padding-left: 16px;
+
+    padding-top: 16px;
+
+    position: relative;
+
+    background: #fff
+
+}
+
+
+
+.product-content .product-deatil h5 a {
+
+    color: #2f383d;
+
+    font-size: 15px;
+
+    line-height: 19px;
+
+    text-decoration: none;
+
+    padding-left: 0;
+
+    margin-left: 0
+
+}
+
+
+
+.prod-info-main .product-deatil h5 a span {
+
+    color: #9aa7af;
+
+    display: block;
+
+    font-size: 13px
+
+}
+
+
+
+.prod-info-main .product-deatil span.tag1 {
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    font-size: 15px;
+
+    height: 50px;
+
+    padding: 13px 0;
+
+    position: absolute;
+
+    right: 10px;
+
+    text-align: center;
+
+    top: 10px;
+
+    width: 50px
+
+}
+
+
+
+.prod-info-main .product-deatil span.sale {
+
+    background-color: #21c2f8
+
+}
+
+
+
+.prod-info-main .product-deatil span.discount {
+
+    background-color: #71e134
+
+}
+
+
+
+.prod-info-main .product-deatil span.hot {
+
+    background-color: #fa9442
+
+}
+
+
+
+.prod-info-main .description {
+
+    font-size: 12.5px;
+
+    line-height: 20px;
+
+    padding: 10px 14px 16px 19px;
+
+    background: #fff
+
+}
+
+
+
+.prod-info-main .product-info {
+
+    padding: 11px 19px 10px 20px
+
+}
+
+
+
+.prod-info-main .product-info a.add-to-cart {
+
+    color: #2f383d;
+
+    font-size: 13px;
+
+    padding-left: 16px
+
+}
+
+
+
+.prod-info-main name.a {
+
+    padding: 5px 10px;
+
+    margin-left: 16px
+
+}
+
+
+
+.product-info.smart-form .btn {
+
+    padding: 6px 12px;
+
+    margin-left: 12px;
+
+    margin-top: -10px
+
+}
+
+
+
+.load-more-btn {
+
+    background-color: #21c2f8;
+
+    border-bottom: 2px solid #037ca5;
+
+    border-radius: 2px;
+
+    border-top: 2px solid #0cf;
+
+    margin-top: 20px;
+
+    padding: 9px 0;
+
+    width: 100%
+
+}
+
+
+
+.product-block .product-deatil p.price-container span,
+
+.prod-info-main .product-deatil p.price-container span,
+
+.shipping table tbody tr td p.price-container span,
+
+.shopping-items table tbody tr td p.price-container span {
+
+    color: #21c2f8;
+
+    font-family: Lato, sans-serif;
+
+    font-size: 24px;
+
+    line-height: 20px
+
+}
+
+
+
+.product-info.smart-form .rating label {
+
+    margin-top:15px;
+
+
+
+}
+
+
+
+.prod-wrap .product-image span.tag2 {
+
+    position: absolute;
+
+    top: 10px;
+
+    right: 10px;
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    padding: 10px 0;
+
+    color: #fff;
+
+    font-size: 11px;
+
+    text-align: center
+
+}
+
+
+
+.prod-wrap .product-image span.tag3 {
+
+    position: absolute;
+
+    top: 10px;
+
+    right: 20px;
+
+    width: 60px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    padding: 10px 0;
+
+    color: #fff;
+
+    font-size: 11px;
+
+    text-align: center
+
+}
+
+
+
+.prod-wrap .product-image span.sale {
+
+    background-color: #57889c;
+
+}
+
+
+
+.prod-wrap .product-image span.hot {
+
+    background-color: #a90329;
+
+}
+
+
+
+.prod-wrap .product-image span.special {
+
+    background-color: #3B6764;
+
+}
+
+.shop-btn {
+
+    position: relative
+
+}
+
+
+
+.shop-btn>span {
+
+    background: #a90329;
+
+    display: inline-block;
+
+    font-size: 10px;
+
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+
+    font-weight: 700;
+
+    border-radius: 50%;
+
+    padding: 2px 4px 3px!important;
+
+    text-align: center;
+
+    line-height: normal;
+
+    width: 19px;
+
+    top: -7px;
+
+    left: -7px
+
+}
+
+
+
+.product-deatil hr {
+
+    padding: 0 0 5px!important
+
+}
+
+
+
+.product-deatil .glyphicon {
+
+    color: #3276b1
+
+}
+
+
+
+.product-deatil .product-image {
+
+    border-right: 0px solid #fff !important
+
+}
+
+
+
+.product-deatil .name {
+
+    margin-top: 0;
+
+    margin-bottom: 0
+
+}
+
+
+
+.product-deatil .name small {
+
+    display: block
+
+}
+
+
+
+.product-deatil .name a {
+
+    margin-left: 0
+
+}
+
+
+
+.product-deatil .price-container {
+
+    font-size: 24px;
+
+    margin: 0;
+
+    font-weight: 300;
+
+
+
+}
+
+
+
+.product-deatil .price-container small {
+
+    font-size: 12px;
+
+
+
+}
+
+
+
+.product-deatil .fa-2x {
+
+    font-size: 16px!important
+
+}
+
+
+
+.product-deatil .fa-2x>h5 {
+
+    font-size: 12px;
+
+    margin: 0
+
+}
+
+
+
+.product-deatil .fa-2x+a,
+
+.product-deatil .fa-2x+a+a {
+
+    font-size: 13px
+
+}
+
+
+
+.product-deatil .certified {
+
+    margin-top: 10px
+
+}
+
+
+
+.product-deatil .certified ul {
+
+    padding-left: 0
+
+}
+
+
+
+.product-deatil .certified ul li:not(first-child) {
+
+    margin-left: -3px
+
+}
+
+
+
+.product-deatil .certified ul li {
+
+    display: inline-block;
+
+    background-color: #f9f9f9;
+
+    padding: 13px 19px
+
+}
+
+
+
+.product-deatil .certified ul li:first-child {
+
+    border-right: none
+
+}
+
+
+
+.product-deatil .certified ul li a {
+
+    text-align: left;
+
+    font-size: 12px;
+
+    color: #6d7a83;
+
+    line-height: 16px;
+
+    text-decoration: none
+
+}
+
+
+
+.product-deatil .certified ul li a span {
+
+    display: block;
+
+    color: #21c2f8;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-align: center
+
+}
+
+
+
+.product-deatil .message-text {
+
+    width: calc(100% - 70px)
+
+}
+
+/*--Button effect classes for add to cart*/
+
+.btn-cart{
+
+    border-radius: 0;
+
+    position: relative;
+
+    color: #fff;
+
+    border:1px solid transparent;
+
+    text-transform: uppercase;
+
+    transition: all 0.40s ease 0s;
+
+}
+
+.btn-cart:after{
+
+    content: "\f07a";
+
+    font-family: fontawesome;
+
+    position: absolute;
+
+    right: 6px;
+
+    top: -4px;
+
+    opacity: 0;
+
+    color: #fff;
+
+    transition: all 0.40s ease 0s;
+
+}
+
+.btn-cart:hover:after{
+
+    top:40%;
+
+    opacity: 5;
+
+}
+
+.btn-cart span{
+
+    display: block;
+
+    transition: all 0.70s linear 0s;
+
+}
+
+.btn-cart:hover span{
+
+    transform: translate(-9px);
+
+}
+
+
+
+/*--Button effect classes for More info*/
+
+.btn-info{
+
+    border-radius: 0;
+
+    position: relative;
+
+    color: #fff;
+
+    border:1px solid transparent;
+
+    text-transform: uppercase;
+
+    transition: all 0.40s ease 0s;
+
+}
+
+.btn-info:after{
+
+    content: "\f129";
+
+    font-family: fontawesome;
+
+    position: absolute;
+
+    right: 6px;
+
+    top: -4px;
+
+    opacity: 0;
+
+    color: #fff;
+
+    transition: all 0.40s ease 0s;
+
+}
+
+.btn-info:hover:after{
+
+    top:40%;
+
+    opacity: 5;
+
+}
+
+.btn-info span{
+
+    display: block;
+
+    transition: all 0.70s linear 0s;
+
+}
+
+.btn-info:hover span{
+
+    transform: translate(-9px);
+
+}
+
+
+
+@media only screen and (min-width:1024px) {
+
+    .prod-info-main div[class*=col-md-4] {
+
+        padding-right: 0
+
+    }
+
+    .prod-info-main div[class*=col-md-8] {
+
+        padding: 0 13px 0 0
+
+    }
+
+    .prod-wrap div[class*=col-md-5] {
+
+        padding-right: 0
+
+    }
+
+    .prod-wrap div[class*=col-md-7] {
+
+        padding: 0 13px 0 0
+
+    }
+
+    .prod-info-main .product-image {
+
+        border-right: 1px solid #dfe5e9
+
+    }
+
+    .prod-info-main .product-info {
+
+        position: relative
+
+    }
+
+}
+
+</style>

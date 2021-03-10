@@ -1,0 +1,48 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+spring:
+  datasource:
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    password: 123 # ბაზის პაროლი
+    url: jdbc:postgresql://localhost:5432/ecommerce  #ecommerce ნაცვლად ბაზის სახელი
+    username: postgres # ბაზის იუზერნეიმი
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  ## მაილის კონფიგი, გატესტვის შემთხვევაში შეგიძლიათ თქვენი Gmail გამოიყენოთ მხოლოდ იუზერნეიმის და პაროლის ჩანაცვლებით
+  mail:
+    username: test@gmail.com
+    password: test-password
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  ##
+
+  ## მაქსიმალური მისაღები ფაილების ზომა
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+##
+
+## დინამიური კონფიგი
+config:
+  fee: 0.1 # პროდუქტის საკომისიო (დეფაულტად 0.1)
+  sendto: '"lukalelashvili@gmail.com"'  # ვის მიუვიდეს ექსელის ფაილი მაილზე
+  subject: '"სატესტო საბჯექთი"' # საბჯექთში რა ეწეროს
+  text: '"გთხოვთ ექსელის ფაილს ჩაურთოთ ედიტინგი რათა მიიღოთ სრული ინფორმაცია"' # გასაგზავნი ტექსტი
+##
