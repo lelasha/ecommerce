@@ -2,7 +2,7 @@
 
 ## გაწვდით როგორც დაბილდულ ისე სორს პროჯექტს  
 
-დაბილდული პროექტის გასაშვებად საჭიროა გვეყენოს Java SE Development  
+დაბილდული პროექტის გასაშვებად საჭიროა გვეყენოს Java SE Development Kit    
 https://www.oracle.com/java/technologies/javase-jdk11-downloads.html  
 
 ასევე საჭიროა რელაციური ბაზა postgreSQL    
